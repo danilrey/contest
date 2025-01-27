@@ -1,39 +1,29 @@
 fun main() {
-    val input = readlnOrNull()
-    if (input != null) {
-        val (n, m) = input.split(" ").map { it.toInt() }
-        val distances = readlnOrNull()?.split(" ")?.map { it.toInt() }?.toMutableList() ?: return
+    val n = readlnOrNull()?.toInt() ?: return
+    val points = mutableListOf<Pair<Int, Int>>()
 
-        val a1 = distances[0]
-        val a2 = distances[1]
-        var greatDays = 0
-
-        for (i in 2..<n) {
-            if (distances[i] in a1..a2) {
-                greatDays++
-            }
-        }
-
-        if (greatDays >= m) {
-            println(0)
-            return
-        }
-
-        val correct = mutableListOf<Int>()
-        for (i in 2..<n) {
-            if (distances[i] < a1) {
-                correct.add(a1 - distances[i])
-            } else if (distances[i] > a2) {
-                correct.add(distances[i] - a2)
-            }
-        }
-
-        correct.sort()
-        var result = 0
-        for (i in correct) {
-            result += i
-        }
-
-        println(result)
+    repeat(n) {
+        val (x, y) = readlnOrNull()?.split(" ")?.map { it.toInt() } ?: return
+        points.add(Pair(x, y))
     }
+    var count = 0
+    val usedpairs = BooleanArray(n) { false }
+    for (i in 0..<n) {
+        for (j in i + 1..<n) {
+            for (k in j + 1..<n) {
+                if (!usedpairs[i] && !usedpairs[j] && !usedpairs[k]) {
+                    val (x1, y1) = points[i]
+                    val (x2, y2) = points[j]
+                    val (x3, y3) = points[k]
+                    if ((x2 - x1) * (y3 - y1) != (y2 - y1) * (x3 - x1)) {
+                        count++
+                        usedpairs[i] = true
+                        usedpairs[j] = true
+                        usedpairs[k] = true
+                    }
+                }
+            }
+        }
+    }
+    println(count)
 }
